@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>استایل مو با دنیا</title>
+    
+    <!-- اضافه کردن فونت زیبای وزیرمتن -->
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        /* =============================================
+           ROOT VARIABLES & THEME (تغییر به تم سایت شما)
+           ============================================= */
+        :root {
+            /* پالت رنگی استخراج شده از تصویر */
+            --primary: #3A221E;         /* قهوه‌ای تیره - متن‌ها و دکمه‌ها */
+            --primary-light: #E19B68;   /* هلویی ملایم - آکسان‌ها و هاور */
+            --accent: #E19B68;          /* رنگ ستاره‌ها و جزییات */
+            
+            --bg-main: #FAF8F5;         /* کرم بسیار روشن - پس‌زمینه کل */
+            --bg-card: #FFFFFF;         /* سفید - پس‌زمینه کارت‌ها برای ایجاد عمق */
+            --bg-secondary: #F1E8E1;    /* کرم/بژ - پس زمینه نشان‌ها و هدر */
+            --bg-input: #F1E8E1;        /* بژ ملایم - پس زمینه فرم‌ها */
+            
+            --text-primary: #3A221E;    /* رنگ متن اصلی */
+            --text-secondary: #7A6561;  /* رنگ متن توضیحات */
+            --text-muted: #A3938F;      /* متن‌های کم‌رنگ */
+            
+            --success: #2E8B57;
+            --success-bg: rgba(46, 139, 87, 0.12);
+            --danger: #D9534F;
+            --danger-bg: rgba(217, 83, 79, 0.12);
+            --warning: #F0AD4E;
+            --warning-bg: rgba(240, 173, 78, 0.12);
+            --white: #FFFFFF;
+            
+            --border: #E8DDDA;
+            --border-active: #3A221E;
+            
+            --shadow-sm: 0 4px 15px rgba(58, 34, 30, 0.04);
+            --shadow-md: 0 8px 25px rgba(58, 34, 30, 0.08);
+            --shadow-glow: 0 4px 15px rgba(225, 155, 104, 0.3);
+            
+            /* گوشه‌های گردتر برای شبیه شدن به وبسایت */
+            --radius-xs: 12px;
+            --radius-sm: 20px;
+            --radius-md: 24px;
+            --radius-lg: 32px;
+            --radius-xl: 40px;
+            --radius-pill: 100px;
+            
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.15s ease;
+            --transition-bounce: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* =============================================
+           RESET & BASE
+           ============================================= */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            /* اعمال فونت جدید */
+            font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, Tahoma, Arial, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            direction: rtl;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* =============================================
+           SCROLLBAR
+           ============================================= */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+        /* =============================================
+           ANIMATIONS (بدون تغییر)
+           ============================================= */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-6px); } }
+        @keyframes sparkle { 0%, 100% { opacity: 0.3; transform: scale(0.8) rotate(0deg); } 50% { opacity: 1; transform: scale(1.2) rotate(45deg); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes progressFill { from { width: 0; } }
+
+        .anim-in { animation: fadeInUp 0.5s ease forwards; }
+        .anim-d1 { animation-delay: 0.05s; opacity: 0; }
+        .anim-d2 { animation-delay: 0.1s; opacity: 0; }
+        .anim-d3 { animation-delay: 0.15s; opacity: 0; }
+        .anim-d4 { animation-delay: 0.2s; opacity: 0; }
+        .anim-d5 { animation-delay: 0.25s; opacity: 0; }
+        .anim-d6 { animation-delay: 0.3s; opacity: 0; }
+
+        /* =============================================
+           LAYOUT
+           ============================================= */
+        .app-container {
+            max-width: 440px;
+            margin: 0 auto;
+            padding: 16px 20px 110px;
+        }
+
+        .page { display: none; animation: fadeIn 0.3s ease; }
+        .page.active { display: block; }
+
+        /* =============================================
+           HEADER - WELCOME
+           ============================================= */
+        .hero {
+            position: relative;
+            text-align: center;
+            padding: 36px 20px 32px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl);
+            margin-bottom: 20px;
+            overflow: hidden;
+            border: 1px solid var(--white);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .hero-sparkle {
+            position: absolute;
+            color: var(--accent);
+            font-size: 14px;
+            animation: sparkle 3s ease-in-out infinite;
+        }
+        .hero-sparkle::after { content: '✨'; }
+        .hero-sparkle:nth-child(1) { top: 12%; left: 10%; animation-delay: 0s; font-size: 18px;}
+        .hero-sparkle:nth-child(2) { top: 20%; right: 12%; animation-delay: 0.8s; }
+        .hero-sparkle:nth-child(3) { bottom: 25%; left: 15%; animation-delay: 1.6s; font-size: 10px;}
+        .hero-sparkle:nth-child(4) { bottom: 15%; right: 10%; animation-delay: 2.4s; font-size: 16px;}
+
+        .hero-icon {
+            font-size: 50px;
+            display: block;
+            margin-bottom: 8px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .hero-title {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero-sub {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-weight: 500;
+        }
+
+        /* =============================================
+           USER INFO BAR
+           ============================================= */
+        .user-bar {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: var(--bg-card);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .user-avatar {
+            width: 46px; height: 46px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary);
+            flex-shrink: 0;
+            border: 2px solid var(--white);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .user-info { flex: 1; }
+
+        .user-name { font-size: 15px; font-weight: 800; color: var(--text-primary); }
+        .user-status { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+
+        /* =============================================
+           MENU GRID
+           ============================================= */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .menu-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 22px 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .menu-card:active {
+            transform: scale(0.96);
+            background: var(--bg-secondary);
+            border-color: var(--primary);
+        }
+
+        .menu-card .mc-icon { font-size: 32px; display: block; margin-bottom: 10px; }
+        .menu-card .mc-title { font-size: 14px; font-weight: 800; color: var(--text-primary); }
+        .menu-card .mc-sub { font-size: 11px; color: var(--text-secondary); margin-top: 4px; font-weight: 500;}
+
+        .menu-card-wide {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 18px 20px;
+            text-align: right;
+        }
+
+        .menu-card-wide .mc-icon { margin-bottom: 0; flex-shrink: 0; }
+        .menu-card-wide .mc-text { flex: 1; }
+
+        /* =============================================
+           SECTION HEADER
+           ============================================= */
+        .sec-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px dashed var(--border);
+        }
+
+        .sec-header .sec-icon { font-size: 24px; }
+
+        .sec-header h2 {
+            font-size: 18px;
+            font-weight: 900;
+            color: var(--primary);
+            flex: 1;
+        }
+
+        .btn-back {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--primary);
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-back:active { transform: scale(0.9); background: var(--bg-secondary); }
+
+        /* =============================================
+           PROGRESS BAR
+           ============================================= */
+        .progress-bar { display: flex; gap: 8px; margin-bottom: 24px; }
+
+        .progress-step {
+            flex: 1; height: 6px; border-radius: 3px;
+            background: var(--border); overflow: hidden;
+        }
+
+        .progress-step.active { background: var(--primary-light); animation: progressFill 0.5s ease; }
+        .progress-step.done { background: var(--primary); }
+
+        .step-label {
+            font-size: 13px; font-weight: 700; color: var(--text-primary);
+            margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+        }
+
+        .step-label .step-num {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 24px; height: 24px; border-radius: 50%;
+            background: var(--primary); color: var(--white);
+            font-size: 12px; font-weight: 800;
+        }
+
+        /* =============================================
+           DAY SELECTOR (Jalali Calendar)
+           ============================================= */
+        .day-scroll {
+            display: flex; gap: 10px; overflow-x: auto;
+            padding: 4px 4px 16px; scrollbar-width: none;
+        }
+        .day-scroll::-webkit-scrollbar { display: none; }
+
+        .day-chip {
+            flex-shrink: 0; width: 76px; padding: 14px 8px;
+            background: var(--bg-card); border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm); text-align: center;
+            cursor: pointer; transition: var(--transition-bounce);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .day-chip.selected {
+            border-color: var(--primary); background: var(--primary);
+            box-shadow: var(--shadow-md); color: var(--white);
+        }
+
+        .day-chip.off { opacity: 0.5; cursor: not-allowed; background: var(--bg-main); }
+
+        .day-chip .dc-name { font-size: 11px; margin-bottom: 6px; font-weight: 700; color: var(--text-secondary); }
+        .day-chip .dc-num { font-size: 22px; font-weight: 900; margin-bottom: 2px; color: var(--primary); }
+        .day-chip .dc-month { font-size: 10px; color: var(--text-muted); font-weight: 600; }
+        .day-chip .dc-today { color: var(--primary-light); }
+
+        .day-chip.selected .dc-name,
+        .day-chip.selected .dc-num,
+        .day-chip.selected .dc-month,
+        .day-chip.selected .dc-today { color: var(--white); }
+
+        /* =============================================
+           TIME SLOTS
+           ============================================= */
+        .time-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        .time-chip {
+            padding: 16px 10px; background: var(--bg-card);
+            border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+            text-align: center; cursor: pointer; transition: var(--transition-bounce);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .time-chip:active:not(.booked) { transform: scale(0.95); }
+
+        .time-chip.selected {
+            border-color: var(--primary); background: var(--primary);
+            color: var(--white); box-shadow: var(--shadow-md);
+        }
+
+        .time-chip.booked { background: var(--bg-main); border-color: transparent; opacity: 0.6; cursor: not-allowed; }
+
+        .time-chip .tc-time { font-size: 18px; font-weight: 900; color: var(--primary); }
+        .time-chip.selected .tc-time { color: var(--white); }
+        .time-chip.booked .tc-time { text-decoration: line-through; color: var(--text-muted); }
+
+        .time-chip .tc-status { font-size: 11px; margin-top: 4px; font-weight: 700; color: var(--text-secondary); }
+        .time-chip.selected .tc-status { color: rgba(255,255,255,0.8); }
+
+        /* =============================================
+           SERVICE SELECTION
+           ============================================= */
+        .svc-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+
+        .svc-item {
+            display: flex; align-items: center; gap: 14px;
+            background: var(--bg-card); border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm); padding: 16px;
+            cursor: pointer; transition: var(--transition); box-shadow: var(--shadow-sm);
+        }
+
+        .svc-item:active { transform: scale(0.98); background: var(--bg-secondary); }
+
+        .svc-item.selected { border-color: var(--primary); background: var(--bg-secondary); }
+
+        .svc-item .si-icon { font-size: 30px; flex-shrink: 0; background: var(--bg-main); width: 48px; height: 48px; display:flex; align-items:center; justify-content:center; border-radius: 50%; }
+        .svc-item .si-info { flex: 1; }
+        .svc-item .si-name { font-size: 15px; font-weight: 800; color: var(--text-primary); }
+        .svc-item .si-desc { font-size: 12px; color: var(--text-secondary); margin-top: 4px; font-weight: 500;}
+
+        .svc-item .si-check {
+            width: 24px; height: 24px; border-radius: 50%;
+            border: 2px solid var(--text-muted); display: flex; align-items: center;
+            justify-content: center; font-size: 12px; color: transparent;
+            transition: var(--transition); flex-shrink: 0;
+        }
+
+        .svc-item.selected .si-check { background: var(--primary); border-color: var(--primary); color: var(--white); }
+
+        /* =============================================
+           FORM ELEMENTS
+           ============================================= */
+        .form-group { margin-bottom: 20px; }
+
+        .form-label {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 13px; font-weight: 800; color: var(--text-primary); margin-bottom: 10px;
+        }
+
+        .form-input {
+            width: 100%; padding: 16px; background: var(--bg-card);
+            border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+            color: var(--text-primary); font-size: 14px; font-family: inherit;
+            direction: rtl; transition: var(--transition); outline: none; box-shadow: var(--shadow-sm);
+        }
+
+        .form-input:focus { border-color: var(--primary); background: var(--white); box-shadow: 0 0 0 4px rgba(58,34,30,0.08); }
+        .form-input::placeholder { color: var(--text-muted); font-weight: 500;}
+
+        textarea.form-input { min-height: 100px; resize: vertical; line-height: 1.8; }
+
+        .photo-box {
+            width: 100%; padding: 32px; background: var(--bg-card);
+            border: 2px dashed var(--border); border-radius: var(--radius-sm);
+            text-align: center; cursor: pointer; transition: var(--transition);
+        }
+
+        .photo-box:active { border-color: var(--primary); background: var(--bg-secondary); }
+        .photo-box .pb-icon { font-size: 40px; display: block; margin-bottom: 8px; }
+        .photo-box .pb-text { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+        .photo-box .pb-hint { font-size: 11px; color: var(--text-muted); margin-top: 6px; font-weight: 500;}
+
+        .photo-preview { width: 100%; max-height: 200px; object-fit: cover; border-radius: var(--radius-sm); margin-top: 12px; display: none; border: 1px solid var(--border); }
+
+        /* =============================================
+           BUTTONS (طراحی کپسولی مثل سایت)
+           ============================================= */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 8px; padding: 16px 24px; border: none;
+            border-radius: var(--radius-pill); /* کپسولی */
+            font-size: 16px; font-weight: 800; font-family: inherit;
+            cursor: pointer; transition: var(--transition); width: 100%;
+        }
+
+        .btn:active { transform: scale(0.97); }
+
+        .btn-primary {
+            background: var(--primary); color: var(--white);
+            box-shadow: 0 8px 20px rgba(58, 34, 30, 0.2);
+        }
+
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; box-shadow: none; }
+
+        .btn-danger { background: var(--danger); color: var(--white); }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-outline:active { background: var(--bg-secondary); }
+        .btn-sm { padding: 10px 18px; font-size: 13px; width: auto; }
+
+        /* =============================================
+           SUMMARY CARD
+           ============================================= */
+        .summary-card {
+            background: var(--bg-card); border-radius: var(--radius-md);
+            padding: 20px; margin-bottom: 20px; border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .summary-card h3 { font-size: 16px; font-weight: 900; color: var(--primary); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+
+        .sum-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 1px dashed var(--border); }
+        .sum-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .sum-row .sr-label { font-size: 13px; font-weight: 700; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+        .sum-row .sr-value { font-size: 14px; font-weight: 800; color: var(--text-primary); text-align: left; max-width: 60%; word-break: break-word; }
+
+        /* =============================================
+           APPOINTMENT CARDS
+           ============================================= */
+        .appt-card {
+            background: var(--bg-card); border-radius: var(--radius-md);
+            padding: 18px; margin-bottom: 12px; border: 1px solid var(--border);
+            border-right: 5px solid var(--primary); transition: var(--transition);
+            animation: slideInRight 0.4s ease forwards; box-shadow: var(--shadow-sm);
+        }
+
+        .appt-card.status-pending { border-right-color: var(--warning); }
+        .appt-card.status-rejected { border-right-color: var(--danger); opacity: 0.7; }
+        .appt-card.status-cancelled { border-right-color: var(--text-muted); opacity: 0.6; }
+
+        .appt-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .appt-date { font-size: 15px; font-weight: 900; color: var(--primary); }
+        
+        .status-badge { font-size: 11px; padding: 4px 12px; border-radius: 20px; font-weight: 800; }
+        .status-badge.approved { background: var(--success-bg); color: var(--success); }
+        .status-badge.pending { background: var(--warning-bg); color: var(--warning); }
+        .status-badge.rejected { background: var(--danger-bg); color: var(--danger); }
+        .status-badge.cancelled { background: var(--bg-main); color: var(--text-muted); border: 1px solid var(--border); }
+
+        .appt-info { font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500;}
+
+        /* =============================================
+           BOTTOM NAVIGATION (روشن)
+           ============================================= */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border);
+            padding: 8px 16px;
+            padding-bottom: calc(8px + env(safe-area-inset-bottom));
+            z-index: 100;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.03);
+        }
+
+        .nav-inner { display: flex; max-width: 440px; margin: 0 auto; }
+
+        .nav-item {
+            flex: 1; display: flex; flex-direction: column; align-items: center;
+            gap: 4px; padding: 10px 4px; background: none; border: none;
+            color: var(--text-muted); font-size: 11px; font-weight: 700;
+            font-family: inherit; cursor: pointer; border-radius: var(--radius-sm);
+            transition: var(--transition-fast);
+        }
+
+        .nav-item .ni-icon { font-size: 22px; transition: var(--transition-fast); }
+
+        .nav-item.active { color: var(--primary); background: var(--bg-secondary); }
+        .nav-item:active { transform: scale(0.92); }
+
+        /* =============================================
+           UTILITIES
+           ============================================= */
+        .mt-8 { margin-top: 8px; } .mt-12 { margin-top: 12px; } .mt-16 { margin-top: 16px; } .mt-20 { margin-top: 20px; }
+        .text-center { text-align: center; } .text-sm { font-size: 13px; } .text-xs { font-size: 11px; }
+        .text-muted { color: var(--text-muted); } .flex-row { display: flex; gap: 10px; } .flex-1 { flex: 1; }
+        
+        /* Modal & Toasts & Loader (Adjusted for light theme) */
+        .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(80px); padding: 14px 24px; border-radius: var(--radius-pill); font-size: 14px; font-weight: 800; z-index: 9999; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); background: var(--primary); color: var(--white); box-shadow: var(--shadow-md); text-align: center; width:max-content; max-width: 90%;}
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        
+        .modal-wrap { position: fixed; inset: 0; background: rgba(58, 34, 30, 0.6); display: none; align-items: center; justify-content: center; z-index: 9997; padding: 24px; backdrop-filter: blur(4px); }
+        .modal-wrap.show { display: flex; }
+        .modal-card { background: var(--bg-card); border-radius: var(--radius-lg); padding: 32px 24px 24px; width: 100%; max-width: 340px; text-align: center; animation: scaleIn 0.3s ease; box-shadow: var(--shadow-md); }
+        .modal-card .m-icon { font-size: 50px; display: block; margin-bottom: 12px; }
+        .modal-card .m-title { font-size: 18px; font-weight: 900; color: var(--primary); margin-bottom: 10px; }
+        .modal-card .m-text { font-size: 14px; color: var(--text-secondary); line-height: 1.8; margin-bottom: 24px; white-space: pre-line; font-weight: 500;}
+        .modal-btns { display: flex; gap: 10px; } .modal-btns .btn { flex: 1; padding: 14px; }
+        
+        .loader-overlay { position: fixed; inset: 0; background: rgba(250, 248, 245, 0.9); display: none; align-items: center; justify-content: center; flex-direction: column; gap: 16px; z-index: 9998; backdrop-filter: blur(5px); }
+        .loader-overlay.show { display: flex; }
+        .loader-spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .loader-text { font-size: 14px; font-weight: 700; color: var(--primary); }
+    </style>
+</head>
+<!-- بقیه کدهای HTML و اسکریپت‌ها دقیقاً مثل قبل، بدون هیچ تغییری در منطق (کپی شده از سمت شما) -->
+<body>
+
+<!-- LOADER -->
+<div class="loader-overlay" id="loader">
+    <div class="loader-spinner"></div>
+    <div class="loader-text">در حال بارگذاری...</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- MODAL -->
+<div class="modal-wrap" id="modal">
+    <div class="modal-card">
+        <span class="m-icon" id="mIcon"></span>
+        <div class="m-title" id="mTitle"></div>
+        <div class="m-text" id="mText"></div>
+        <div class="modal-btns" id="mBtns"></div>
+    </div>
+</div>
+
+<!-- =============================================
+     PAGE: HOME
+     ============================================= -->
+<div class="page active" id="pageHome">
+    <div class="app-container">
+        <div class="hero anim-in">
+            <div class="hero-sparkle"></div>
+            <div class="hero-sparkle"></div>
+            <div class="hero-sparkle"></div>
+            <div class="hero-sparkle"></div>
+            <span class="hero-icon">💇‍♀️</span>
+            <div class="hero-title">استایل مو با دنیا</div>
+            <div class="hero-sub">زیبایی شما، هنر من است<br>رزرو آنلاین نوبت کوتاهی و استایلینگ</div>
+        </div>
+
+        <div class="user-bar anim-in anim-d1" id="userBar">
+            <div class="user-avatar" id="uAvatar">👤</div>
+            <div class="user-info">
+                <div class="user-name" id="uName">خوش آمدید</div>
+                <div class="user-status" id="uStatus">برای رزرو نوبت اقدام کنید</div>
+                <div id="uLoyalty"></div>
+            </div>
+        </div>
+
+        <div class="menu-grid">
+            <div class="menu-card anim-in anim-d2" onclick="nav('booking')">
+                <span class="mc-icon">📅</span>
+                <div class="mc-title">رزرو نوبت</div>
+                <div class="mc-sub">انتخاب روز و ساعت</div>
+            </div>
+            <div class="menu-card anim-in anim-d3" onclick="nav('myappts')">
+                <span class="mc-icon">📋</span>
+                <div class="mc-title">نوبت‌های من</div>
+                <div class="mc-sub">مشاهده و لغو</div>
+            </div>
+            <div class="menu-card menu-card-wide anim-in anim-d4" onclick="nav('services')">
+                <span class="mc-icon">✨</span>
+                <div class="mc-text">
+                    <div class="mc-title">خدمات سالن</div>
+                    <div class="mc-sub">لیست خدمات و توضیحات</div>
+                </div>
+            </div>
+            <div class="menu-card menu-card-wide anim-in anim-d5" onclick="nav('contact')">
+                <span class="mc-icon">📞</span>
+                <div class="mc-text">
+                    <div class="mc-title">تماس با ما</div>
+                    <div class="mc-sub">آدرس و اطلاعات تماس</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="adminEntry" style="display:none">
+            <div class="menu-card menu-card-wide anim-in anim-d6" style="border-color:var(--warning)" onclick="nav('admin')">
+                <span class="mc-icon">👑</span>
+                <div class="mc-text">
+                    <div class="mc-title">پنل مدیریت</div>
+                    <div class="mc-sub">مدیریت نوبت‌ها و گزارشات</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- =============================================
+     PAGE: BOOKING STEP 1
+     ============================================= -->
+<div class="page" id="pageBooking">
+    <div class="app-container">
+        <div class="sec-header">
+            <span class="sec-icon">📅</span>
+            <h2>رزرو نوبت</h2>
+            <button class="btn-back" onclick="nav('home')">→</button>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-step active" id="pb1"></div>
+            <div class="progress-step" id="pb2"></div>
+            <div class="progress-step" id="pb3"></div>
+        </div>
+
+        <div class="step-label">
+            <span class="step-num">۱</span>
+            انتخاب روز و ساعت
+        </div>
+
+        <div class="day-scroll" id="dayList"></div>
+
+        <div id="timeSec" style="display:none">
+            <div class="step-label mt-8">
+                <span>⏰</span> ساعت مورد نظر (۱۴:۰۰ تا ۱۸:۰۰)
+            </div>
+            <div class="time-grid" id="timeList"></div>
+        </div>
+
+        <button class="btn btn-primary mt-20" id="btnStep2" disabled onclick="toStep2()">
+            مرحله بعد ←
+        </button>
+    </div>
+</div>
+
+<!-- =============================================
+     PAGE: BOOKING STEP 2
+     ============================================= -->
+<div class="page" id="pageStep2">
+    <div class="app-container">
+        <div class="sec-header">
+            <span class="sec-icon">✂️</span>
+            <h2>انتخاب خدمات</h2>
+            <button class="btn-back" onclick="nav('booking')">→</button>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-step done"></div>
+            <div class="progress-step active"></div>
+            <div class="progress-step"></div>
+        </div>
+
+        <div class="step-label">
+            <span class="step-num">۲</span>
+            خدمت و مدل مورد نظر
+        </div>
+
+        <div class="svc-list" id="svcList">
+            <div class="svc-item" onclick="toggleSvc(this,'کوتاهی مو')">
+                <span class="si-icon">✂️</span>
+                <div class="si-info">
+                    <div class="si-name">کوتاهی مو</div>
+                    <div class="si-desc">انواع مدل‌های کوتاهی مدرن</div>
+                </div>
+                <div class="si-check">✓</div>
+            </div>
+            <div class="svc-item" onclick="toggleSvc(this,'شینیون و استایل')">
+                <span class="si-icon">💆‍♀️</span>
+                <div class="si-info">
+                    <div class="si-name">شینیون و استایلینگ</div>
+                    <div class="si-desc">مجلسی، فرم‌دهی و براشینگ</div>
+                </div>
+                <div class="si-check">✓</div>
+            </div>
+            <div class="svc-item" onclick="toggleSvc(this,'رنگ مو')">
+                <span class="si-icon">🎨</span>
+                <div class="si-info">
+                    <div class="si-name">رنگ و لایت</div>
+                    <div class="si-desc">بالیاژ، آمبره، هایلایت</div>
+                </div>
+                <div class="si-check">✓</div>
+            </div>
+            <div class="svc-item" onclick="toggleSvc(this,'مراقبت و تراپی')">
+                <span class="si-icon">🧴</span>
+                <div class="si-info">
+                    <div class="si-name">تراپی و مراقبت مو</div>
+                    <div class="si-desc">کراتین، بوتاکس، ویتامینه</div>
+                </div>
+                <div class="si-check">✓</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">📝 توضیحات / مدل مورد نظر</label>
+            <textarea class="form-input" id="inDesc" placeholder="مثلاً: مدل کوتاهی لایه‌ای می‌خواهم..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">📷 عکس مدل (اختیاری)</label>
+            <div class="photo-box" onclick="$('photoFile').click()">
+                <span class="pb-icon">📸</span>
+                <div class="pb-text">برای انتخاب عکس اینجا بزنید</div>
+                <div class="pb-hint">حداکثر ۵ مگابایت</div>
+            </div>
+            <input type="file" id="photoFile" accept="image/*" style="display:none" onchange="onPhoto(this)">
+            <img class="photo-preview" id="photoPreview">
+        </div>
+
+        <button class="btn btn-primary" onclick="toStep3()">
+            مرحله بعد ←
+        </button>
+    </div>
+</div>
+
+<!-- =============================================
+     PAGE: BOOKING STEP 3
+     ============================================= -->
+<div class="page" id="pageStep3">
+    <div class="app-container">
+        <div class="sec-header">
+            <span class="sec-icon">📱</span>
+            <h2>تکمیل و ثبت</h2>
+            <button class="btn-back" onclick="nav('step2')">→</button>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-step done"></div>
+            <div class="progress-step done"></div>
+            <div class="progress-step active"></div>
+        </div>
+
+        <div class="step-label">
+            <span class="step-num">۳</span>
+            شماره تماس و تأیید نهایی
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">📱 شماره تلفن همراه <span style="color:var(--danger)">*</span></label>
+            <input type="tel" class="form-input" id="inPhone" placeholder="۰۹۱۲۳۴۵۶۷۸۹"
+                   maxlength="11" oninput="checkPhone()">
+        </div>
+
+        <div class="summary-card" id="sumCard">
+            <h3>📋 خلاصه رزرو شما</h3>
+            <div class="sum-row">
+                <span class="sr-label">📅 تاریخ</span>
+                <span class="sr-value" id="sDate">-</span>
+            </div>
+            <div class="sum-row">
+                <span class="sr-label">⏰ ساعت</span>
+                <span class="sr-value" id="sTime">-</span>
+            </div>
+            <div class="sum-row">
+                <span class="sr-label">✂️ خدمات</span>
+                <span class="sr-value" id="sSvc">-</span>
+            </div>
+            <div class="sum-row">
+                <span class="sr-label">📝 توضیحات</span>
+                <span class="sr-value" id="sDesc">-</span>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" id="btnSubmit" disabled onclick="submitBooking()">
+            تأیید و ثبت نوبت
+        </button>
+
+        <p class="text-center text-xs text-muted mt-16" style="font-weight:600;">
+            پس از ثبت، درخواست شما جهت بررسی برای ادمین ارسال خواهد شد.
+        </p>
+    </div>
+</div>
+
+<!-- =============================================
+     PAGE: MY APPOINTMENTS
+     ============================================= -->
+<div class="page" id="pageMyappts">
+    <div class="app-container">
+        <div class="sec-header">
+            <span class="sec-icon">📋</span>
+            <h2>نوبت‌های من</h2>
+            <button class="btn-back" onclick="nav('home')">→</button>
+        </div>
+        <div id="myList"></div>
+    </div>
+</div>
+
+<!-- =============================================
+     PAGE: SERVICES
+     ============================================= -->
+<div class="page" id="pageServices">
+    <div class="app-container">
+        <div class="sec-header">
+            <span class="sec-icon">✨</span>
+            <h2>خدمات سالن</h2>
+            <button class="btn-back" onclick="nav('home')">→</button>
+        </div>
+
+        <div class="svc-list">
+            <div class="svc-item" style="cursor:default;border-color:var(--border)">
+                <span class="si-icon">✂️</span>
+                <div class="si-info">
+                    <div class="si-name">کوتاهی مو</div>
+                    <div class="si-desc">لایه‌ای، فشن، کلاسیک، مردانه و زنانه</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="summary-card mt-12">
+            <p class="text-sm text-secondary" style="line-height:2; font-weight:600; text-align:justify;">
+                💡 برای اطلاع دقیق از قیمت هر خدمت، لطفاً نوبت رزرو کنید تا پس از بررسی درخواست، جزئیات با شما هماهنگ شود یا مستقیماً با سالن تماس بگیرید.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- =============================================
+     PAGE: CONTACT
+     ============================================= -->
+<div class="page" id="pageContact">
+    <div class="app-container">
+        <div class="sec-header">
+            <span class="sec-icon">📞</span>
+            <h2>تماس با ما</h2>
+            <button class="btn-back" onclick="nav('home')">→</button>
+        </div>
+
+        <div class="summary-card">
+            <div class="sum-row"><span class="sr-label">📍 آدرس</span><span class="sr-value">سالن زیبایی دنیا</span></div>
+            <div class="sum-row"><span class="sr-label">📱 تلفن</span><span class="sr-value">۰۹۱۲۰۰۰۰۰۰۰</span></div>
+            <div class="sum-row"><span class="sr-label">⏰ ساعت کاری</span><span class="sr-value">۱۴:۰۰ تا ۱۸:۰۰</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+    <div class="nav-inner">
+        <button class="nav-item active" id="navHome" onclick="nav('home')">
+            <span class="ni-icon">🏠</span>خانه
+        </button>
+        <button class="nav-item" id="navBooking" onclick="nav('booking')">
+            <span class="ni-icon">📅</span>رزرو نوبت
+        </button>
+        <button class="nav-item" id="navAppts" onclick="nav('myappts')">
+            <span class="ni-icon">📋</span>نوبت‌های من
+        </button>
+    </div>
+</div>
+
+<!-- JAVASCRIPT (بدون تغییر نسبت به کد قبل) -->
+<script>
+// ==============================================
+// CONFIGURATION
+// ==============================================
+const C = {
+    TOKEN: 'YOUR_BOT_TOKEN_HERE',
+    CHANNEL: '-100XXXXXXXXXX',
+    ADMINS: [123456789, 987654321],
+    WORK_START: 14,
+    WORK_END: 18,
+    SLOT_MIN: 30,
+    DAYS_AHEAD: 14
+};
+
+// ==============================================
+// JALALI CALENDAR CONVERTER
+// ==============================================
+const Jal = {
+    g2j(gy, gm, gd) {
+        const gdm = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+        let jy, jm, jd, gy2, days;
+        gy2 = (gm > 2) ? (gy + 1) : gy;
+        days = 355666 + (365 * gy) + Math.floor((gy2 + 3) / 4) - Math.floor((gy2 + 99) / 100)
+             + Math.floor((gy2 + 399) / 400) + gd + gdm[gm - 1];
+        jy = -1595 + (33 * Math.floor(days / 12053));
+        days %= 12053;
+        jy += 4 * Math.floor(days / 1461);
+        days %= 1461;
+        if (days > 365) { jy += Math.floor((days - 1) / 365); days = (days - 1) % 365; }
+        if (days < 186) { jm = 1 + Math.floor(days / 31); jd = 1 + (days % 31); } 
+        else { jm = 7 + Math.floor((days - 186) / 30); jd = 1 + ((days - 186) % 30); }
+        return { jy, jm, jd };
+    },
+    monthName(m) { return ['','فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'][m] || ''; },
+    dayName(d) { return ['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'][d] || ''; },
+    fromDate(date) {
+        const r = this.g2j(date.getFullYear(), date.getMonth() + 1, date.getDate());
+        return { jy: r.jy, jm: r.jm, jd: r.jd, monthStr: this.monthName(r.jm), dayStr: this.dayName(date.getDay()), full: `${this.dayName(date.getDay())} ${fa(r.jd)} ${this.monthName(r.jm)} ${fa(r.jy)}` };
+    }
+};
+
+// ==============================================
+// HELPERS & STATE
+// ==============================================
+function fa(n) { return String(n).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+function $(id) { return document.getElementById(id); }
+function haptic(type) { try { Telegram.WebApp.HapticFeedback[type === 'n' ? 'notificationOccurred' : 'selectionChanged'](type === 'n' ? 'success' : undefined); } catch(e) {} }
+
+const tg = Telegram.WebApp; tg.ready(); tg.expand(); tg.enableClosingConfirmation();
+const TGU = tg.initDataUnsafe?.user || {}; const UID = TGU.id || 0;
+const UNAME = (TGU.first_name || 'کاربر') + (TGU.last_name ? ' ' + TGU.last_name : '');
+const UUSER = TGU.username || ''; const IS_ADMIN = C.ADMINS.includes(UID);
+
+const S = { day: null, time: null, svcs: [], desc: '', phone: '', photo: null, bookings: [], page: 'home' };
+
+// ==============================================
+// MOCK API & STORAGE (For demo/standalone functionality)
+// ==============================================
+async function api(m, b) { console.log('Mock API Call:', m, b); return {ok:true}; }
+async function cloudGet(k) { const v = localStorage.getItem(`cs_${UID}_${k}`); return v ? JSON.parse(v) : null; }
+async function cloudSet(k, v) { localStorage.setItem(`cs_${UID}_${k}`, JSON.stringify(v)); return true; }
+async function loadGlobal() { S.bookings = (await cloudGet('gbl_bk')) || []; return S.bookings; }
+async function saveGlobal() { await cloudSet('gbl_bk', S.bookings); }
+async function loadMy() { return (await cloudGet('my_bk')) || []; }
+async function saveMy(arr) { await cloudSet('my_bk', arr); }
+async function channelSave(data) { console.log('Mock Channel Save:', data); }
+
+// ==============================================
+// NAVIGATION
+// ==============================================
+function nav(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const map = { home:'pageHome', booking:'pageBooking', step2:'pageStep2', step3:'pageStep3', myappts:'pageMyappts', services:'pageServices', contact:'pageContact', admin:'pageAdmin' };
+    const el = $(map[page]); if (el) { el.classList.add('active'); S.page = page; }
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    if (page === 'home') $('navHome')?.classList.add('active');
+    else if (['booking','step2','step3'].includes(page)) $('navBooking')?.classList.add('active');
+    else if (page === 'myappts') $('navAppts')?.classList.add('active');
+    if (page === 'myappts') renderMyAppts();
+    window.scrollTo(0, 0); haptic('s');
+}
+
+// ==============================================
+// LOGIC: CALENDAR & TIME
+// ==============================================
+function buildDays() {
+    const box = $('dayList'); box.innerHTML = ''; const now = new Date();
+    for (let i = 0; i < C.DAYS_AHEAD; i++) {
+        const d = new Date(now); d.setDate(now.getDate() + i);
+        const j = Jal.fromDate(d); const gDate = d.toISOString().split('T')[0];
+        const isFri = d.getDay() === 5;
+        const chip = document.createElement('div');
+        chip.className = `day-chip ${isFri ? 'off' : ''}`;
+        chip.innerHTML = `<div class="dc-name">${i === 0 ? '<span class="dc-today">امروز</span>' : j.dayStr}</div><div class="dc-num">${fa(j.jd)}</div><div class="dc-month">${j.monthStr}</div>`;
+        if (isFri) chip.onclick = () => toast('جمعه‌ها تعطیل هستیم 🙏', 'error');
+        else chip.onclick = () => pickDay({ gDate, jalali: j, dow: d.getDay() }, chip);
+        box.appendChild(chip);
+    }
+}
+
+async function pickDay(day, el) {
+    document.querySelectorAll('.day-chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected'); S.day = day; S.time = null;
+    $('timeSec').style.display = 'block'; $('btnStep2').disabled = true;
+    await buildTimes(day.gDate); haptic('s');
+}
+
+async function buildTimes(gDate) {
+    const box = $('timeList'); box.innerHTML = ''; await loadGlobal();
+    const booked = S.bookings.filter(b => b.date === gDate && b.status !== 'cancelled' && b.status !== 'rejected').map(b => b.time);
+    for (let h = C.WORK_START; h < C.WORK_END; h++) {
+        for (let m = 0; m < 60; m += C.SLOT_MIN) {
+            const t = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+            const taken = booked.includes(t);
+            const chip = document.createElement('div');
+            chip.className = `time-chip ${taken ? 'booked' : ''}`;
+            chip.innerHTML = `<div class="tc-time">${fa(t)}</div><div class="tc-status">${taken ? 'رزرو شده' : 'آزاد'}</div>`;
+            if (!taken) chip.onclick = () => pickTime(t, chip);
+            box.appendChild(chip);
+        }
+    }
+}
+
+function pickTime(t, el) {
+    document.querySelectorAll('.time-chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected'); S.time = t; $('btnStep2').disabled = false; haptic('s');
+}
+
+// ==============================================
+// LOGIC: BOOKING STEPS
+// ==============================================
+function toStep2() { if (!S.day || !S.time) return toast('لطفاً روز و ساعت را انتخاب کنید', 'error'); nav('step2'); }
+function toStep3() {
+    if (S.svcs.length === 0) return toast('حداقل یک خدمت انتخاب کنید', 'error');
+    S.desc = $('inDesc').value.trim();
+    $('sDate').textContent = S.day.jalali.full; $('sTime').textContent = fa(S.time);
+    $('sSvc').textContent = S.svcs.join('، '); $('sDesc').textContent = S.desc || 'ندارد';
+    nav('step3');
+}
+function toggleSvc(el, name) {
+    el.classList.toggle('selected'); const i = S.svcs.indexOf(name);
+    if (i > -1) S.svcs.splice(i, 1); else S.svcs.push(name); haptic('s');
+}
+function onPhoto(input) {
+    const f = input.files[0]; if (!f) return;
+    if (f.size > 5 * 1024 * 1024) return toast('حجم فایل زیاد است', 'error');
+    const r = new FileReader();
+    r.onload = e => { S.photo = e.target.result; const p = $('photoPreview'); p.src = e.target.result; p.style.display = 'block'; toast('عکس اضافه شد', 'success'); };
+    r.readAsDataURL(f);
+}
+function checkPhone() {
+    const v = $('inPhone').value.trim(); const en = v.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+    const ok = /^09\d{9}$/.test(en); $('btnSubmit').disabled = !ok; S.phone = v;
+}
+
+async function submitBooking() {
+    showLoader(true);
+    const bk = { id: `BK_${Date.now()}`, userId: UID, userName: UNAME, date: S.day.gDate, dateLabel: S.day.jalali.full, time: S.time, services: [...S.svcs], description: S.desc, phone: S.phone, status: 'pending', createdAt: new Date().toISOString() };
+    try {
+        S.bookings.push(bk); await saveGlobal();
+        const my = await loadMy(); my.push(bk); await saveMy(my);
+        showLoader(false);
+        modal('✅', 'درخواست ثبت شد', `درخواست نوبت شما برای:\n${S.day.jalali.full} - ساعت ${fa(S.time)}\nبا موفقیت ثبت شد و در انتظار تایید است.`, [{ t: 'بازگشت به خانه', a: () => { closeModal(); nav('home'); } }]);
+        haptic('n');
+    } catch (e) { showLoader(false); toast('خطا در ثبت', 'error'); }
+}
+
+// ==============================================
+// LOGIC: MY APPOINTMENTS
+// ==============================================
+async function renderMyAppts() {
+    const box = $('myList'); const my = await loadMy();
+    if (!my || my.length === 0) { box.innerHTML = '<div style="text-align:center; padding:40px 20px; color:var(--text-muted); font-weight:700;">هنوز نوبتی ثبت نکرده‌اید.</div>'; return; }
+    await loadGlobal();
+    for (const m of my) { const g = S.bookings.find(b => b.id === m.id); if (g) m.status = g.status; } await saveMy(my);
+    my.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    box.innerHTML = my.map((b, i) => `
+        <div class="appt-card status-${b.status}" style="animation-delay:${i * 0.05}s">
+            <div class="appt-top"><span class="appt-date">${b.dateLabel}</span><span class="status-badge ${b.status}">${b.status === 'approved' ? 'تأیید شده' : b.status === 'pending' ? 'در انتظار' : b.status === 'rejected' ? 'رد شده' : 'لغو شده'}</span></div>
+            <div class="appt-info">⏰ ساعت: ${fa(b.time)}</div>
+            <div class="appt-info">✂️ خدمات: ${b.services.join('، ')}</div>
+            ${b.status !== 'cancelled' && b.status !== 'rejected' ? `<button class="btn btn-outline btn-sm mt-12" onclick="cancelMy('${b.id}')">لغو نوبت</button>` : ''}
+        </div>`).join('');
+}
+function cancelMy(id) {
+    modal('⚠️', 'لغو نوبت', 'آیا از لغو این نوبت اطمینان دارید؟', [
+        { t: 'بله، لغو شود', a: async () => { closeModal(); showLoader(true); const my = await loadMy(); const bk = my.find(b => b.id === id); if (bk) bk.status = 'cancelled'; await saveMy(my); const gb = S.bookings.find(b => b.id === id); if (gb) gb.status = 'cancelled'; await saveGlobal(); showLoader(false); toast('لغو شد', 'success'); renderMyAppts(); } },
+        { t: 'انصراف', a: closeModal }
+    ]);
+}
+
+// ==============================================
+// UI UTILS
+// ==============================================
+function toast(msg, type = '') { const t = $('toast'); t.textContent = msg; t.className = `toast ${type} show`; clearTimeout(t._tid); t._tid = setTimeout(() => t.classList.remove('show'), 3000); }
+function showLoader(on) { $('loader').classList.toggle('show', on); }
+function modal(icon, title, text, buttons) { $('mIcon').textContent = icon; $('mTitle').textContent = title; $('mText').textContent = text; const box = $('mBtns'); box.innerHTML = ''; buttons.forEach(b => { const el = document.createElement('button'); el.className = `btn ${b.t.includes('بله') || b.t.includes('بازگشت') ? 'btn-primary' : 'btn-outline'}`; el.textContent = b.t; el.onclick = b.a; box.appendChild(el); }); $('modal').classList.add('show'); }
+function closeModal() { $('modal').classList.remove('show'); }
+
+// INIT
+async function init() {
+    $('uName').textContent = `سلام ${UNAME}`;
+    if (TGU.first_name) $('uAvatar').textContent = TGU.first_name.charAt(0);
+    buildDays(); await loadGlobal();
+}
+init();
+</script>
+</body>
+</html>
