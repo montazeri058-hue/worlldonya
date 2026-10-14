@@ -1024,10 +1024,19 @@ function toggleSvc(el, name) {
     if (i > -1) S.svcs.splice(i, 1); else S.svcs.push(name); haptic('s');
 }
 function onPhoto(input) {
-    const f = input.files[0]; if (!f) return;
-    if (f.size > 5 * 1024 * 1024) return toast('حجم فایل زیاد است', 'error');
+    const f = input.files[0];
+    if (!f) return;
+    if (f.size > 5 * 1024 * 1024) return toast('حجم فایل زیاد است (حداکثر ۵ مگابایت)', 'error');
+
+    S.photoFile = f; // فایل عکس را برای آپلود ذخیره میکنیم
+    
     const r = new FileReader();
-    r.onload = e => { S.photo = e.target.result; const p = $('photoPreview'); p.src = e.target.result; p.style.display = 'block'; toast('عکس اضافه شد', 'success'); };
+    r.onload = e => {
+        const p = $('photoPreview');
+        p.src = e.target.result;
+        p.style.display = 'block';
+        toast('عکس آماده ارسال شد ✅', 'success');
+    };
     r.readAsDataURL(f);
 }
 function checkPhone() {
@@ -1042,99 +1051,101 @@ async function submitBooking() {
 
     showLoader(true);
 
-    const bk = {
-        id: `BK_${UID}_${Date.now()}`,
-        userId: UID,
-        userName: UNAME,
-        username: UUSER,
-        date: S.day.gDate,
-        dateLabel: S.day.jalali.full,
-        time: S.time,
-        services: [...S.svcs],
-        description: S.desc,
-        phone: S.phone,
-        hasPhoto: !!S.photo,
-        status: 'pending',
-        createdAt: new Date().toISOString()
-    };
+    // جاسازی هوشمندانه تاریخ و ساعت در خود ID (بدون نیاز به JSON کثیف)
+    const cleanDate = S.day.gDate.replace(/-/g, ''); // 20241014
+    const cleanTime = S.time.replace(':', '');       // 1400
+    const bkId = `BK_${UID}_${cleanDate}_${cleanTime}_${Date.now()}`;
 
-    // متن شکیل و خوانا برای انسان
+    // فقط متن شیک و تمیز
     const prettyText = 
         `✨ *رزرو نوبت جدید سالن زیبایی دنیا* ✨\n` +
         `━━━━━━━━━━━━━━━━━━━━━━\n` +
-        `👤 *مشتری:* ${bk.userName} ${bk.username ? '(@' + bk.username + ')' : ''}\n` +
-        `📱 *شماره تماس:* \`${bk.phone}\`\n\n` +
-        `📅 *تاریخ:* ${bk.dateLabel}\n` +
-        `⏰ *ساعت:* ${fa(bk.time)}\n` +
-        `✂️ *خدمات:* ${bk.services.join('، ')}\n` +
-        `📝 *توضیحات:* ${bk.description || '—'}\n\n` +
-        `⏳ *وضعیت:* در انتظار تأیید ادمین\n` +
+        `👤 مشتری: ${UNAME} ${UUSER ? '(@' + UUSER + ')' : ''}\n` +
+        `📱 شماره تماس: \`${S.phone}\`\n\n` +
+        `📅 تاریخ: ${S.day.jalali.full}\n` +
+        `⏰ ساعت: ${fa(S.time)}\n` +
+        `✂️ خدمات: ${S.svcs.join('، ')}\n` +
+        `📝 توضیحات: ${S.desc || '—'}\n\n` +
+        `⏳ وضعیت: در انتظار تأیید ادمین\n` +
         `━━━━━━━━━━━━━━━━━━━━━━\n` +
-        `🆔 کد سیستمی: \`${bk.id}\`\n\n` +
-        `\`DATA:${JSON.stringify(bk)}\``; // اطلاعات سیستمی برای ربات
+        `🆔 کد پیگیری: \`${bkId}\``;
 
     try {
-        // ۱. ارسال فاکتور شیک به کانال
-        const chRes = await fetch(`https://api.telegram.org/bot${C.TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: C.CHANNEL,
-                text: prettyText,
-                parse_mode: 'Markdown'
-            })
-        });
+        const url = `https://api.telegram.org/bot${C.TOKEN}/`;
+        let chRes;
 
-        const chJson = await chRes.json();
-        if (!chJson.ok) {
-            showLoader(false);
-            alert("❌ خطای ارسال به کانال:\n" + chJson.description);
-            return;
-        }
-
-        // ۲. ارسال فاکتور با دکمه‌های اینلاین برای پیوی ادمین‌ها
-        const markup = {
-            inline_keyboard: [
-                [
-                    { text: '✅ تأیید نوبت', callback_data: `ap_${bk.id}` },
-                    { text: '❌ رد نوبت', callback_data: `rj_${bk.id}` }
-                ],
-                [{ text: '🗑 لغو نوبت', callback_data: `cn_${bk.id}` }]
-            ]
-        };
-
-        for (const adminId of C.ADMINS) {
-            await fetch(`https://api.telegram.org/bot${C.TOKEN}/sendMessage`, {
+        // اگر کاربر عکس گذاشته باشد، فایل آپلود میشود
+        if (S.photoFile) {
+            let fd = new FormData();
+            fd.append("chat_id", C.CHANNEL);
+            fd.append("photo", S.photoFile);
+            fd.append("caption", prettyText);
+            fd.append("parse_mode", "Markdown");
+            chRes = await fetch(url + "sendPhoto", { method: 'POST', body: fd });
+        } else {
+            chRes = await fetch(url + "sendMessage", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: adminId,
-                    text: prettyText,
-                    parse_mode: 'Markdown',
-                    reply_markup: markup
-                })
+                body: JSON.stringify({ chat_id: C.CHANNEL, text: prettyText, parse_mode: 'Markdown' })
             });
         }
 
-        // ۳. ذخیره محلی
-        S.bookings.push(bk);
+        const chData = await chRes.json();
+        if (!chData.ok) {
+            showLoader(false);
+            alert("❌ خطای ارسال به کانال:\n" + chData.description);
+            return;
+        }
+
+        // استخراج آیدی عکسی که به کانال آپلود شد (برای فوروارد سریع به ادمین‌ها)
+        let uploadedFileId = null;
+        if (chData.result && chData.result.photo) {
+            const photos = chData.result.photo;
+            uploadedFileId = photos[photos.length - 1].file_id;
+        }
+
+        const markup = {
+            inline_keyboard: [
+                [
+                    { text: '✅ تأیید', callback_data: `ap_${bkId}` },
+                    { text: '❌ رد', callback_data: `rj_${bkId}` }
+                ],
+                [{ text: '🗑 لغو', callback_data: `cn_${bkId}` }]
+            ]
+        };
+
+        // ارسال به پیوی ادمین‌ها (بدون آپلود مجدد، در ۱ ثانیه ارسال میشود)
+        for (const adminId of C.ADMINS) {
+            if (uploadedFileId) {
+                await fetch(url + "sendPhoto", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: adminId, photo: uploadedFileId, caption: prettyText, parse_mode: 'Markdown', reply_markup: markup })
+                });
+            } else {
+                await fetch(url + "sendMessage", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: adminId, text: prettyText, parse_mode: 'Markdown', reply_markup: markup })
+                });
+            }
+        }
+
+        // ذخیره محلی برای صفحه "نوبت‌های من"
+        const bkData = { id: bkId, date: S.day.gDate, time: S.time, status: 'pending', services: S.svcs, phone: S.phone, dateLabel: S.day.jalali.full };
+        S.bookings.push(bkData);
         await saveGlobal();
         const my = await loadMy();
-        my.push(bk);
+        my.push(bkData);
         await saveMy(my);
 
         showLoader(false);
-
-        modal('✅', 'رزرو ثبت شد!',
-            `درخواست شما برای\n${S.day.jalali.full}\nساعت ${fa(S.time)}\nثبت شد.\n\nمنتظر تأیید ادمین باشید.`,
-            [{ t: 'بازگشت به خانه', a: () => { closeModal(); resetForm(); nav('home'); } }]
-        );
-
+        modal('✅', 'رزرو ثبت شد!', `درخواست شما برای\nساعت ${fa(S.time)}\nثبت شد. منتظر تأیید ادمین باشید.`, [{ t: 'بازگشت به خانه', a: () => { closeModal(); resetForm(); nav('home'); } }]);
         haptic('n');
 
     } catch (e) {
         showLoader(false);
-        alert("❌ خطای شبکه:\n" + e.message);
+        alert("❌ خطای اینترنت:\n" + e.message);
     }
 }
 // ==============================================
