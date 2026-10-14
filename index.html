@@ -1036,17 +1036,101 @@ function checkPhone() {
 }
 
 async function submitBooking() {
-    showLoader(true);
-    const bk = { id: `BK_${Date.now()}`, userId: UID, userName: UNAME, date: S.day.gDate, dateLabel: S.day.jalali.full, time: S.time, services: [...S.svcs], description: S.desc, phone: S.phone, status: 'pending', createdAt: new Date().toISOString() };
-    try {
-        S.bookings.push(bk); await saveGlobal();
-        const my = await loadMy(); my.push(bk); await saveMy(my);
-        showLoader(false);
-        modal('✅', 'درخواست ثبت شد', `درخواست نوبت شما برای:\n${S.day.jalali.full} - ساعت ${fa(S.time)}\nبا موفقیت ثبت شد و در انتظار تایید است.`, [{ t: 'بازگشت به خانه', a: () => { closeModal(); nav('home'); } }]);
-        haptic('n');
-    } catch (e) { showLoader(false); toast('خطا در ثبت', 'error'); }
-}
+    if (!S.day || !S.time || S.svcs.length === 0 || !S.phone) {
+        return toast('اطلاعات ناقص است', 'error');
+    }
 
+    showLoader(true);
+
+    const bk = {
+        id: `BK_${UID}_${Date.now()}`,
+        userId: UID,
+        userName: UNAME,
+        username: UUSER,
+        date: S.day.gDate,
+        dateLabel: S.day.jalali.full,
+        time: S.time,
+        services: [...S.svcs],
+        description: S.desc,
+        phone: S.phone,
+        hasPhoto: !!S.photo,
+        status: 'pending',
+        createdAt: new Date().toISOString()
+    };
+
+    try {
+        // ۱. ارسال مستقیم به کانال
+        const chRes = await fetch(`https://api.telegram.org/bot${C.TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: C.CHANNEL,
+                text: '📦BK\n' + JSON.stringify(bk)
+            })
+        });
+
+        const chJson = await chRes.json();
+        
+        if (!chJson.ok) {
+            showLoader(false);
+            alert("❌ خطای ارسال به کانال:\n" + chJson.description + "\n\n(مطمئن شوید ربات در کانال ادمین است)");
+            return;
+        }
+
+        // ۲. ارسال مستقیم پیام به ادمین‌ها
+        const msgText = `🔔 *درخواست رزرو جدید*\n\n` +
+            `👤 *نام:* ${bk.userName}\n` +
+            `📱 *تلفن:* \`${bk.phone}\`\n` +
+            `📅 *تاریخ:* ${bk.dateLabel}\n` +
+            `⏰ *ساعت:* ${bk.time}\n` +
+            `✂️ *خدمات:* ${bk.services.join('، ')}\n` +
+            `📝 *توضیحات:* ${bk.description || 'ندارد'}\n\n` +
+            `🆔 \`${bk.id}\``;
+
+        const markup = {
+            inline_keyboard: [
+                [
+                    { text: '✅ تأیید', callback_data: `ap_${bk.id}` },
+                    { text: '❌ رد', callback_data: `rj_${bk.id}` }
+                ],
+                [{ text: '🗑 لغو نوبت', callback_data: `cn_${bk.id}` }]
+            ]
+        };
+
+        for (const adminId of C.ADMINS) {
+            await fetch(`https://api.telegram.org/bot${C.TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: adminId,
+                    text: msgText,
+                    parse_mode: 'Markdown',
+                    reply_markup: markup
+                })
+            });
+        }
+
+        // ۳. ذخیره در حافظه محلی
+        S.bookings.push(bk);
+        await saveGlobal();
+        const my = await loadMy();
+        my.push(bk);
+        await saveMy(my);
+
+        showLoader(false);
+
+        modal('✅', 'رزرو ثبت شد!',
+            `درخواست شما برای\n${S.day.jalali.full}\nساعت ${fa(S.time)}\nثبت شد.\n\nمنتظر تأیید ادمین باشید.`,
+            [{ t: 'بازگشت به خانه', a: () => { closeModal(); resetForm(); nav('home'); } }]
+        );
+
+        haptic('n');
+
+    } catch (e) {
+        showLoader(false);
+        alert("❌ خطای شبکه یا اینترنت:\n" + e.message);
+    }
+}
 // ==============================================
 // LOGIC: MY APPOINTMENTS
 // ==============================================
